@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agente IA - Frontend</title>
+</head>
+<body>
+    <h1>Agente IA en Colab</h1>
+
+    <!-- Botón para probar conexión -->
+    <button onclick="probarConexion()">Probar conexión</button>
+
+    <!-- Subir PDF -->
+    <input type="file" id="pdfFile" accept=".pdf">
+    <button onclick="subirPDF()">Subir PDF</button>
+
+    <!-- Subir CSV -->
+    <input type="file" id="csvFile" accept=".csv">
+    <button onclick="subirCSV()">Subir CSV</button>
+
+    <!-- Consultar Gemini -->
+    <input type="text" id="pregunta" placeholder="Escribe tu pregunta">
+    <button onclick="consultarGemini()">Consultar Gemini</button>
+
+    <script>
+        // ⚠️ Reemplaza esta URL por la que te entregue ngrok cada vez que reinicies Colab
+        const BASE_URL = "https://animator-dispose-dolly.ngrok-free.dev";
+
+        async function probarConexion() {
+            try {
+                const response = await fetch(`${BASE_URL}/`, {
+                    headers: { "ngrok-skip-browser-warning": "true" }
+                });
+                const data = await response.json();
+                alert("Respuesta del backend: " + JSON.stringify(data));
+            } catch (error) {
+                alert("Error al conectar: " + error);
+            }
+        }
+
+        async function subirPDF() {
+            const fileInput = document.getElementById("pdfFile");
+            if (!fileInput.files.length) {
+                alert("Selecciona un archivo PDF primero");
+                return;
+            }
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            try {
+                const response = await fetch(`${BASE_URL}/subir-pdf`, {
+                    method: "POST",
+                    body: formData,
+                    headers: { "ngrok-skip-browser-warning": "true" }
+                });
+                const data = await response.json();
+                alert("Respuesta del backend: " + JSON.stringify(data));
+            } catch (error) {
+                alert("Error al subir PDF: " + error);
+            }
+        }
+
+        async function subirCSV() {
+            const fileInput = document.getElementById("csvFile");
+            if (!fileInput.files.length) {
+                alert("Selecciona un archivo CSV primero");
+                return;
+            }
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            try {
+                const response = await fetch(`${BASE_URL}/consultar-csv`, {
+                    method: "POST",
+                    body: formData,
+                    headers: { "ngrok-skip-browser-warning": "true" }
+                });
+                const data = await response.json();
+                alert("Respuesta del backend: " + JSON.stringify(data));
+            } catch (error) {
+                alert("Error al subir CSV: " + error);
+            }
+        }
+
+        async function consultarGemini() {
+            const pregunta = document.getElementById("pregunta").value;
+            if (!pregunta) {
+                alert("Escribe una pregunta primero");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${BASE_URL}/consultar-gemini`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "true"
+                    },
+                    body: JSON.stringify({ pregunta })
+                });
+                const data = await response.json();
+                alert("Respuesta del backend: " + JSON.stringify(data));
+            } catch (error) {
+                alert("Error al consultar Gemini: " + error);
+            }
+        }
+    </script>
+</body>
+</html>
