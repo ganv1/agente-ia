@@ -8,6 +8,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Instalamos dependencias
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiamos el resto del proyecto
