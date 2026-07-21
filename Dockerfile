@@ -1,20 +1,20 @@
-# 1. Imagen base de Python
-FROM python:3.11-slim
+# Imagen base ligera de Python
+FROM python:3.10-slim
 
-# 2. Directorio de trabajo dentro del contenedor
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# 3. Copiar dependencias
+# requirements.txt para aprovechar cache de Docker
 COPY requirements.txt .
 
-# 4. Instalar dependencias
+# Instalamos dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. Copiar el resto del proyecto
+# Copiamos el resto del proyecto
 COPY . .
 
-# 6. Exponer el puerto (FastAPI usa 8000 por defecto)
+# Exponemos el puerto 8000 (FastAPI)
 EXPOSE 8000
 
-# 7. Comando que arranca tu API
+# Comando de arranque del servidor
 CMD ["uvicorn", "api_agente:app", "--host", "0.0.0.0", "--port", "8000"]
