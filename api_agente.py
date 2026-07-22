@@ -18,7 +18,7 @@ app.add_middleware(
 # === Endpoints básicos ===
 @app.get("/")
 def root():
-    return {"message": "Agente IA funcionando en Colab con autenticación automática"}
+    return {"message": "Agente IA funcionando en Render"}
 
 @app.post("/subir-pdf")
 async def subir_pdf(file: UploadFile = File(...)):
