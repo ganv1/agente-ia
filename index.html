@@ -6,34 +6,39 @@
     <title>Agente IA - Frontend</title>
 </head>
 <body>
-    <h1>Agente IA en Colab</h1>
+    <h1>Agente IA en Render</h1>
 
     <!-- Botón para probar conexión -->
     <button onclick="probarConexion()">Probar conexión</button>
+    <p id="pingResult"></p>
 
     <!-- Subir PDF -->
+    <h2>Subir PDF</h2>
     <input type="file" id="pdfFile" accept=".pdf">
     <button onclick="subirPDF()">Subir PDF</button>
+    <pre id="pdfResult"></pre>
 
     <!-- Subir CSV -->
+    <h2>Subir CSV</h2>
     <input type="file" id="csvFile" accept=".csv">
     <button onclick="subirCSV()">Subir CSV</button>
+    <pre id="csvResult"></pre>
 
     <!-- Consultar Gemini -->
+    <h2>Consulta a Gemini</h2>
     <input type="text" id="pregunta" placeholder="Escribe tu pregunta">
     <button onclick="consultarGemini()">Consultar Gemini</button>
+    <pre id="geminiResult"></pre>
 
     <script>
-        // ⚠️ Reemplaza esta URL por la que te entregue ngrok cada vez que reinicies Colab
-        const BASE_URL = "https://animator-dispose-dolly.ngrok-free.dev";
+        // URL pública de tu backend en Render
+        const BASE_URL = "https://agente-ia.onrender.com";
 
         async function probarConexion() {
             try {
-                const response = await fetch(`${BASE_URL}/`, {
-                    headers: { "ngrok-skip-browser-warning": "true" }
-                });
+                const response = await fetch(`${BASE_URL}/`);
                 const data = await response.json();
-                alert("Respuesta del backend: " + JSON.stringify(data));
+                document.getElementById("pingResult").innerText = JSON.stringify(data);
             } catch (error) {
                 alert("Error al conectar: " + error);
             }
@@ -51,11 +56,10 @@
             try {
                 const response = await fetch(`${BASE_URL}/subir-pdf`, {
                     method: "POST",
-                    body: formData,
-                    headers: { "ngrok-skip-browser-warning": "true" }
+                    body: formData
                 });
                 const data = await response.json();
-                alert("Respuesta del backend: " + JSON.stringify(data));
+                document.getElementById("pdfResult").innerText = JSON.stringify(data, null, 2);
             } catch (error) {
                 alert("Error al subir PDF: " + error);
             }
@@ -73,11 +77,10 @@
             try {
                 const response = await fetch(`${BASE_URL}/consultar-csv`, {
                     method: "POST",
-                    body: formData,
-                    headers: { "ngrok-skip-browser-warning": "true" }
+                    body: formData
                 });
                 const data = await response.json();
-                alert("Respuesta del backend: " + JSON.stringify(data));
+                document.getElementById("csvResult").innerText = JSON.stringify(data, null, 2);
             } catch (error) {
                 alert("Error al subir CSV: " + error);
             }
@@ -94,13 +97,12 @@
                 const response = await fetch(`${BASE_URL}/consultar-gemini`, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "true"
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({ pregunta })
                 });
                 const data = await response.json();
-                alert("Respuesta del backend: " + JSON.stringify(data));
+                document.getElementById("geminiResult").innerText = JSON.stringify(data, null, 2);
             } catch (error) {
                 alert("Error al consultar Gemini: " + error);
             }
