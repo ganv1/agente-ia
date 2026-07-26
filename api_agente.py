@@ -1,5 +1,4 @@
 # api_agente.py
-
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import FileResponse, JSONResponse
 import pdfplumber
@@ -53,7 +52,7 @@ async def consultar_gemini(pregunta: dict):
 
     # Llamar a Gemini para generar resumen
     try:
-        modelo = genai.GenerativeModel("gemini-pro")  # modelo estable
+        modelo = genai.GenerativeModel("models/gemini-2.5-flash")  # modelo válido en  SDK
         prompt = (
             f"Resume el siguiente documento en no más de 7 líneas, "
             f"de forma clara y concisa:\n\n{contenido_texto[:4000]}"
