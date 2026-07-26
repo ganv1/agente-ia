@@ -8,3 +8,5 @@ langchain-text-splitters
 pandas
 numpy
 python-multipart
+google-generativeai
+pdfplumber
