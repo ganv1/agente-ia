@@ -53,7 +53,7 @@ async def consultar_gemini(pregunta: dict):
 
     # Llamar a Gemini para generar resumen
     try:
-        modelo = genai.GenerativeModel("gemini-1.5-flash")
+        modelo = genai.GenerativeModel("gemini-pro")  # modelo estable
         prompt = (
             f"Resume el siguiente documento en no más de 7 líneas, "
             f"de forma clara y concisa:\n\n{contenido_texto[:4000]}"
