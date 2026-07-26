@@ -1,36 +1,44 @@
 # api_agente.py
 
 from fastapi import FastAPI, UploadFile, File
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
+from fastapi.responses import FileResponse, JSONResponse
+import pandas as pd
 
 app = FastAPI()
 
-# === Middleware CORS ===
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],        # Permite cualquier origen
-    allow_credentials=True,
-    allow_methods=["*"],        # Permite todos los métodos
-    allow_headers=["*"],        # Permite todos los encabezados
-)
-
-# === Endpoints básicos ===
+# 👉 Servir el index.html como página principal
 @app.get("/")
-def root():
-    return {"message": "Agente IA funcionando en Render"}
+def read_root():
+    return FileResponse("index.html")
 
+# 👉 Endpoint para subir PDF
 @app.post("/subir-pdf")
 async def subir_pdf(file: UploadFile = File(...)):
-    return {"filename": file.filename, "status": "PDF recibido"}
+    # Aquí podrías procesar el PDF (ejemplo: guardarlo temporalmente)
+    content = await file.read()
+    # Simulación de respuesta
+    return {"filename": file.filename, "status": "PDF recibido correctamente"}
 
+# 👉 Endpoint para consultar CSV
 @app.post("/consultar-csv")
-async def consultar_csv(file: UploadFile = File(...)):
-    return {"filename": file.filename, "status": "CSV recibido"}
+async def consultar_csv(query: dict):
+    # Ejemplo: simular que tienes un CSV cargado
+    # En producción, deberías leer un archivo real
+    data = {
+        "Nombre": ["Ana", "Luis", "Pedro"],
+        "Edad": [25, 30, 40]
+    }
+    df = pd.DataFrame(data)
 
+    # Simulación: devolver todo el dataset si se pide "todos"
+    if query.get("query") == "todos":
+        return df.to_dict(orient="records")
+    else:
+        return {"resultado": f"Consulta recibida: {query.get('query')}"}
+
+# 👉 Endpoint para consultar Gemini
 @app.post("/consultar-gemini")
-async def consultar_gemini(pregunta: str):
-    return {"pregunta": pregunta, "respuesta": "Respuesta simulada del agente IA"}
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+async def consultar_gemini(pregunta: dict):
+    # Aquí iría la integración real con Gemini
+    # Simulación de respuesta
+    return {"respuesta": f"Gemini procesó la pregunta: {pregunta.get('pregunta')}"}

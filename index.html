@@ -1,112 +1,208 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Agente IA - Frontend</title>
+  <meta charset="UTF-8">
+  <title>Agente IA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #2c3e50;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 10px;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      color: #3498db;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: flex-start;
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    section {
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #34495e;
+      text-align: center;
+    }
+
+    input[type="file"],
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    button {
+      background: #3498db;
+      color: #fff;
+      border: none;
+      padding: 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    #result {
+      background: #ecf0f1;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+      font-family: monospace;
+      font-size: 12px;
+      height: 120px;
+      overflow-y: auto;
+    }
+
+    footer {
+      background: #2c3e50;
+      color: #fff;
+      text-align: center;
+      padding: 5px;
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Agente IA en Render</h1>
+  <header>
+    <h1>Agente IA</h1>
+    <nav>
+      <a href="#pdf">PDF</a>
+      <a href="#csv">CSV</a>
+      <a href="#gemini">Gemini</a>
+    </nav>
+  </header>
 
-    <!-- Botón para probar conexión -->
-    <button onclick="probarConexion()">Probar conexión</button>
-    <p id="pingResult"></p>
-
+  <div class="container">
     <!-- Subir PDF -->
-    <h2>Subir PDF</h2>
-    <input type="file" id="pdfFile" accept=".pdf">
-    <button onclick="subirPDF()">Subir PDF</button>
-    <pre id="pdfResult"></pre>
+    <section id="pdf">
+      <h2>Subir PDF</h2>
+      <form id="pdfForm">
+        <input type="file" id="pdfFile" accept="application/pdf" />
+        <button type="submit">Enviar PDF</button>
+      </form>
+    </section>
 
-    <!-- Subir CSV -->
-    <h2>Subir CSV</h2>
-    <input type="file" id="csvFile" accept=".csv">
-    <button onclick="subirCSV()">Subir CSV</button>
-    <pre id="csvResult"></pre>
+    <!-- Consultar CSV -->
+    <section id="csv">
+      <h2>Consultar CSV</h2>
+      <form id="csvForm">
+        <input type="text" id="csvQuery" placeholder="Escribe tu consulta..." />
+        <button type="submit">Consultar CSV</button>
+      </form>
+    </section>
 
     <!-- Consultar Gemini -->
-    <h2>Consulta a Gemini</h2>
-    <input type="text" id="pregunta" placeholder="Escribe tu pregunta">
-    <button onclick="consultarGemini()">Consultar Gemini</button>
-    <pre id="geminiResult"></pre>
+    <section id="gemini">
+      <h2>Consultar Gemini</h2>
+      <form id="geminiForm">
+        <input type="text" id="geminiQuery" placeholder="Pregunta a Gemini..." />
+        <button type="submit">Consultar Gemini</button>
+      </form>
+    </section>
+  </div>
 
-    <script>
-        // URL pública de tu backend en Render
-        const BASE_URL = "https://agente-ia.onrender.com";
+  <div id="result"></div>
 
-        async function probarConexion() {
-            try {
-                const response = await fetch(`${BASE_URL}/`);
-                const data = await response.json();
-                document.getElementById("pingResult").innerText = JSON.stringify(data);
-            } catch (error) {
-                alert("Error al conectar: " + error);
-            }
-        }
+  <footer>
+    © 2026 Agente IA | Desplegado en Render
+  </footer>
 
-        async function subirPDF() {
-            const fileInput = document.getElementById("pdfFile");
-            if (!fileInput.files.length) {
-                alert("Selecciona un archivo PDF primero");
-                return;
-            }
-            const formData = new FormData();
-            formData.append("file", fileInput.files[0]);
+  <script>
+    const API_URL = "https://agente-ia-6sz1.onrender.com";
 
-            try {
-                const response = await fetch(`${BASE_URL}/subir-pdf`, {
-                    method: "POST",
-                    body: formData
-                });
-                const data = await response.json();
-                document.getElementById("pdfResult").innerText = JSON.stringify(data, null, 2);
-            } catch (error) {
-                alert("Error al subir PDF: " + error);
-            }
-        }
+    // Subir PDF
+    document.getElementById("pdfForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const file = document.getElementById("pdfFile").files[0];
+      const formData = new FormData();
+      formData.append("file", file);
 
-        async function subirCSV() {
-            const fileInput = document.getElementById("csvFile");
-            if (!fileInput.files.length) {
-                alert("Selecciona un archivo CSV primero");
-                return;
-            }
-            const formData = new FormData();
-            formData.append("file", fileInput.files[0]);
+      const response = await fetch(`${API_URL}/subir-pdf`, {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+      document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+    });
 
-            try {
-                const response = await fetch(`${BASE_URL}/consultar-csv`, {
-                    method: "POST",
-                    body: formData
-                });
-                const data = await response.json();
-                document.getElementById("csvResult").innerText = JSON.stringify(data, null, 2);
-            } catch (error) {
-                alert("Error al subir CSV: " + error);
-            }
-        }
+    // Consultar CSV
+    document.getElementById("csvForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const query = document.getElementById("csvQuery").value;
 
-        async function consultarGemini() {
-            const pregunta = document.getElementById("pregunta").value;
-            if (!pregunta) {
-                alert("Escribe una pregunta primero");
-                return;
-            }
+      const response = await fetch(`${API_URL}/consultar-csv`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+      });
+      const data = await response.json();
+      document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+    });
 
-            try {
-                const response = await fetch(`${BASE_URL}/consultar-gemini`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ pregunta })
-                });
-                const data = await response.json();
-                document.getElementById("geminiResult").innerText = JSON.stringify(data, null, 2);
-            } catch (error) {
-                alert("Error al consultar Gemini: " + error);
-            }
-        }
-    </script>
+    // Consultar Gemini
+    document.getElementById("geminiForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const pregunta = document.getElementById("geminiQuery").value;
+
+      const response = await fetch(`${API_URL}/consultar-gemini`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pregunta })
+      });
+      const data = await response.json();
+      document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+    });
+  </script>
 </body>
 </html>
